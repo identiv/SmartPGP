@@ -162,10 +162,14 @@ public final class PGPKey {
                 return;
             }
             if((Util.getShort(buf, (short)(off + 1)) < 2048) ||
-               (Util.getShort(buf, (short)(off + 3)) != 0x11) ||
+               (Util.getShort(buf, (short)(off + 3)) < 0x11) ||
                (buf[(short)(off + 5)] < 0) || (buf[(short)(off + 5)] > 3)) {
                 ISOException.throwIt(ISO7816.SW_WRONG_DATA);
                 return;
+            }
+            if (Util.getShort(buf, (short) (off + 3)) > 0x11) {
+                buf[(short) (off + 3)] = 0x00;
+                buf[(short) (off + 4)] = 0x11;
             }
             break;
 
